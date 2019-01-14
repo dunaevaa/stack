@@ -1,19 +1,23 @@
-#include "stack.h"
 #include <iostream>
-#include <stdlib.h>
+#include "stack.h"
+#include <complex>
 
 using namespace std;
 
-int main()
-{
-	Stack <int> *st = new Stack<int>;
-	st->push2(7);
-	cout << st->head() << endl;
-	int a = 2;
-	st->push1(a);
-	cout << st->head() << endl;
-	st->pop();
-	cout << st->head() << endl;
-	//system("pause");
-	return 0;
+int main() {
+    stack<int> st;
+    st.push(10);
+    cout << "head of stack after push: " << st.head() << endl;
+    st.push_emplace(1,2,3);
+    cout << "head of stack after emplace: " << st.head() << endl;
+    st.push_emplace(4);
+    cout << "head of stack after emplace: " << st.head() << endl;
+    st.push_emplace(5);
+    cout << "head of stack after emplace: " << st.head() << endl;
+    st.pop();
+    cout << "head of stack after pop: " << st.head() << endl;
+    st.pop();
+    cout << "head of stack after pop: " << st.head() << endl;
+    st.pop();
+    cout << "head of stack after pop: " << st.head() << endl;
 }
