@@ -1,44 +1,91 @@
+#include <initializer_list>
+#include <stdarg.h>
 #include <iostream>
 
-using namespace std;
-
-template <typename T>
-struct Node
+template <class T>
+class stack
 {
-	T x;
-	Node <T> *head, *next;
-};
-
-template <typename T>
-class Stack
-{
-	Node <T> *h;
+    struct Node
+    {
+        T value;
+        Node *next;
+    };
+    Node *top;
 public:
-	void push1(T &val)
-	{
-		Node<T> *temp = new Node<T>;
-		temp->x = val;
-		temp->next = h;
-		h = temp;
-	}
-
-	void pop()
-	{
-		Node <T> *pv = h;
-		h = h->next;
-		delete pv;
-	}
-
-	T& head()
-	{
-		return h->x;
-	}
-
-	void push2(T &&value)
-	{
-		Node<T> *temp = new Node<T>;
-		temp->next = h;
-		temp->x = value;
-		h = move(temp);
-	}
+    stack();
+    stack(const stack&) = delete;
+    stack& operator=(const stack&) = delete;
+    template <class... Args>
+    void push_emplace(Args&&... value);
+    template<class T1,class... Args>
+    void push_emplace1(T1&& value, Args&&... value1);
+    void push(T&& value);
+    void push(const T& value);
+    const T& head() const;
+    T pop();
+    ~stack();
 };
+
+template <class T>
+stack<T>::stack()
+{
+    top = nullptr;
+}
+
+template <class T>
+template <class... Args>
+void stack<T>::push_emplace(Args&&... value)
+{
+    for (auto p : std::initializer_list<T>{value...})
+    {
+        Node *node = new Node;
+        node->value = p;
+        node->next = top;
+        top = node;
+    }
+}
+
+template <class T>
+void stack<T>::push(T&& value)
+{
+    Node *node = new Node;
+    node->value = value;
+    node->next = top;
+    top = node;
+}
+
+template <typename T>
+void stack<T>::push(const T& value)
+{
+    Node *node = new Node;
+    node->value = value;
+    node->next = top;
+    top = node;
+}
+
+template <class T>
+const T& stack<T>::head() const
+{
+    return top->value;
+}
+
+template <class T>
+T stack<T>::pop()
+{
+    T value = top->value;
+    Node *tmp = top;
+    top = top->next;
+    delete tmp;
+    return value;
+}
+
+template <class T>
+stack<T>::~stack()
+{
+    while (top)
+    {
+        Node *tmp = top;
+        top = top->next;
+        delete tmp;
+    }
+}
